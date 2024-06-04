@@ -1,0 +1,123 @@
+class Library {
+    private val books = mutableListOf<Book>()
+    
+    fun addBook(book: Book) {
+        books.add(book)
+        println("Book has been added.")
+    }
+    
+    fun removeBook(title: String) {
+        val bookToRemove = books.find { it.title == title }
+        if (bookToRemove != null) {
+            books.remove(bookToRemove)
+            println("Book has been removed.")
+        } else {
+            println("There is no item with that name.")
+        }
+    }
+    
+    fun searchBookTitle(title: String): Book? {
+        return books.find { it.title == title }
+    }
+    
+    fun searchByAuthor(author: String): Book? {
+        return books.find { it.author == author }
+    }
+    
+    fun displayBooks() {
+        if (books.isEmpty()) {
+            println("Library is empty.")
+        } else {
+            books.forEach { println(it) }
+        }
+    }
+}
+
+fun main() {
+    val library = Library()
+    
+    while (true) {
+        println("Press --> 1 for adding a book")
+        println("Press --> 2 for removing a book")
+        println("Press --> 3 for searching a book")
+        println("Press --> 4 for displaying the list of books")
+        println("Press --> 5 for exit")
+        println("Choose: ")
+
+        try {
+            when (readln().toInt()) {
+                1 -> {
+                    println("Write your book title: ")
+                    val title: String = readln()
+                    println("Write the author: ")
+                    val author: String = readln()
+                    
+                    var year: Int? = null
+                    while (true) {
+                        println("Write the year: ")
+                        val yearInput = readln()
+                        try {
+                            year = yearInput.toInt()
+                            break
+                        } catch (e: NumberFormatException) {
+                            println("Invalid year format. Please enter a valid number.")
+                            println("Press 1 to try again or 2 to exit:")
+                            val choice = readln()
+                            if (choice == "2") break
+                        }
+                    }
+
+                    if (year != null) {
+                        println("Write the gender: ")
+                        val gender: String = readln()
+                        val book = Book(title, author, year, gender)
+                        library.addBook(book)
+                    } else {
+                        println("Book was not added due to invalid year input.")
+                    }
+                }
+                2 -> {
+                    println("Write the title of the book you want to remove: ")
+                    val remove = readln()
+                    library.removeBook(remove)
+                }
+                3 -> {
+                    println("Print -> 1 for searching by title or print -> 2 for searching by author")
+                    when (readln().toInt()) {
+                        1 -> {
+                            println("Write the title: ")
+                            val title = readln()
+                            val book: Book? = library.searchBookTitle(title)
+                            if (book != null) {
+                                println("Here is your book: $book")
+                            } else {
+                                println("No book is here with that title.")
+                            }
+                        }
+                        2 -> {
+                            println("Write the author: ")
+                            val author = readln()
+                            val book = library.searchByAuthor(author)
+                            if (book != null) {
+                                println("Here is your book: $book")
+                            } else {
+                                println("There is no such book, print wisely.")
+                            }
+                        }
+                    }
+                }
+                4 -> {
+                    println("Here is our list:")
+                    library.displayBooks()
+                }
+                5 -> {
+                    println("Exiting...")
+                    break
+                }
+                else -> println("Invalid option. Please choose a valid number.")
+            }
+        } catch (e: NumberFormatException) {
+            println("Invalid input. Please enter only numbers.")
+        }
+    }
+}
